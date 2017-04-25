@@ -52,29 +52,6 @@ bgcolor=dhscodebg, rulecolor=\color{gray!40}}
 \begin{document}
 
 
-
-\defverbatim[colored]\lstI{
-\begin{lstlisting}[language=C++,basicstyle=\ttfamily,keywordstyle=\color{blue},commentstyle=\color{darkgreen}]
-#define M1 1
-#define M2 M1
-#define M3 M2
-...
-int x = M3 + M3; // M3 expands two times
-\end{lstlisting}
-}
-
-\defverbatim[colored]\lstRepeat{
-\begin{lstlisting}[language=C++,basicstyle=\ttfamily,keywordstyle=\color{blue},commentstyle=\color{darkgreen},basicstyle=\small]
-#define BOOST_PP_REPEAT_1_0(m, d)
-#define BOOST_PP_REPEAT_1_1(m, d) m(2, 0, d)
-#define BOOST_PP_REPEAT_1_2(m, d) \ 
-           BOOST_PP_REPEAT_1_1(m, d) m(2, 1, d)
-...
-#define BOOST_PP_REPEAT_1_255(m, d) \
-           BOOST_PP_REPEAT_1_254(m, d) m(2, 3, d)
-\end{lstlisting}
-}
-
 \begin{frame}[t,plain]
 \titlepage
 \end{frame}
@@ -302,7 +279,7 @@ Interestingly, never seen it used anywhere
 \caption{Input image (wires are emphasized)}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
- \centering
+\centering
 \includegraphics[width=1\linewidth]{dirhisthard}
 \caption{Normalized sum of segments square lengths by direction}
 \end{subfigure}
@@ -339,6 +316,7 @@ Interestingly, never seen it used anywhere
 \caption{Detected pylon}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
+\centering
 \includegraphics[scale=0.072]{roi}
 \caption{Extracted roi lines}
 \end{subfigure}
@@ -379,6 +357,7 @@ Two matchers are currently implemented: exhaustive and triangle
 \caption{Original model}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
+\centering
 \includegraphics[scale=0.2]{colored_3d_triangles}
 \caption{Extracted triangle holes}
 \end{subfigure}
@@ -397,46 +376,87 @@ Two matchers are currently implemented: exhaustive and triangle
 \end{frame}
 
 
+
+\begin{frame}[t, fragile]{Triangle Matching Example}
+\vspace{1cm}
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+\centering
+\includegraphics[scale=0.27]{triangle_match}
+\caption{Best match}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+\centering
+\includegraphics[scale=0.27]{triangle_match_refine}
+\caption{After exhaustive refinement}
+\end{subfigure}
+\end{figure}
+\end{frame}
+
+
+
+
+
+\begin{frame}[t, fragile]{Score Evaluation Approaches}
+\begin{itemize}
+\item Pixel-counting approach evaluates overlap (in pixels) of rendered model and image segments
+\begin{itemize}
+\item Can be used simplified solid model
+\item Can exploit GPU (currently OpenGL)
+\item Efficiency: 600-700 fps on nvidia 840M with solid model, 1000 fps on nvidia GTX Ti 750
+\end{itemize}
+\item Directions-voting approach evaluates line directions similarity in rendered and reference images
+\begin{itemize}
+\item Split image into fixed-size cells (e.g. 4x4 pixels)
+\item Register image segments directions in each cell (preprocessing)
+\item Score is sum of bins in all cells of rendered image which agree with reference image
+\item Can exploit GPU (currently CUDA)
+\item Efficiency: 100-200 fps better than previous approach
+ 
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
 \begin{frame}[t, fragile]{Score Evaluation}
 \begin{figure}
 \centering
-\includegraphics[scale=0.18]{render}
+\begin{subfigure}{.5\textwidth}
+\centering
+\includegraphics[scale=0.15]{segment_eval}
+\caption{Rendered model}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+\includegraphics[scale=0.073]{gauss_blur}
+\caption{Image cells directions}
+\end{subfigure}
 \end{figure}
 \end{frame}
 
 \begin{frame}[t, fragile]{Solid Model Matching Problems}
 \begin{itemize}
-\item Need to filter non-pylon lines carefully (currently by length)
+\item Noise-sensitive $\Rightarrow$ need to filter non-pylon lines carefully (currently by length)
 \begin{itemize}
-\item Maybe use graph-cut approach with color/orientation/length constraints as seed
+\item Maybe use graph-cut approach in future with color/orientation/length constraints as seed
 \end{itemize}
 \item Height estimation (why?)
 \begin{itemize}
-\item Currently, height is taken from DEM (not good at all!)
-\end{itemize}
-\item Slow: about 600-700 fps on nvidia 840M, about 1000 fps on gtx 1080
-\begin{itemize}
-\item Search space: 180 directions, $\pm 4$ meters in x, y with precision 0.1 gives us 1152000 variants $\Rightarrow$ 20 minutes per photo! Insane
-\item Yet no evidence wiry model will be faster: exhaustive search should be replaced with something smarter
-\item Trivial idea: score substantially different positions, then perform exhaustive search near maxima
-\item Use Line3D output as additional ground truth
+\item Height is taken from DEM (not good at all!)
 \end{itemize}
 \end{itemize}
 \end{frame}
 
-\begin{frame}[t, fragile]{Wiry Model Matching}
+\begin{frame}[t, fragile]{Directions-Voting Matching}
 \begin{itemize}
-\item Perform render and grid intersection via CUDA
 \item Parallelism: one thread per segment
 \item Bresenham's line algorithm for line-grid intersection
-\item Currently fps is similar to solid matching approach, but shared memory and improved parallelism can be considered
 \item Score evaluation
 \begin{itemize}
 \item Naive: remember non-zero bins, score = percentage of these bins which are populated during model rendering [Currently implemented]
 \item Convolute result with gaussian kernel: i.e. we choose two kernels - 2D kernel for spatial smoothing and 1D kernel for angle smoothing, so that rendered segment contributes to several bins simultaneously with different weights
 \end{itemize}
 \end{itemize}
-Profit: no problems with height estimation
 \end{frame}
 
 
