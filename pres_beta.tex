@@ -337,9 +337,10 @@ Two matchers are currently implemented: exhaustive and triangle
 \item Precise, usually works fine if boundaries are set correctly
 \item Can be extremely slow
 \end{itemize} 
-\item \textbf{Triangle matcher} finds triangle holes on the CAD model $\{t_m\}$ and triangles on the image $\{t_i\}$, and for each pair ($t_m, t_i$) tries to find transformation $Model$: $Projection \cdot View \cdot Model(t_m) = t_i$   
+\item \textbf{Triangle matcher} finds triangle holes on the CAD model $\{t_m\}$ and triangles on the image $\{t_i\}$, and for each pair ($t_m, t_i$) tries to find model transformation matrix $M$: $P \cdot V \cdot M(t_m) = t_i$   
 \begin{itemize}
-\item Produces hypotheses, many of which are incorrect $\Rightarrow$ hypotheses to be verified (scored)
+\item It's enough to solve $4^{th}$ order polynomial equation for a single triangles pair
+\item Produces hypotheses, some are incorrect $\Rightarrow$ need sanity check (scoring, common sense)
 \item Generally a lot faster than exhaustive search
 \item Sometimes there are too few of image triangles $\Rightarrow$ not a silver bullet
  
@@ -369,7 +370,7 @@ Two matchers are currently implemented: exhaustive and triangle
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.31]{Match}
+\includegraphics[scale=0.3]{Match}
 \end{figure}
  
 
@@ -453,10 +454,37 @@ Two matchers are currently implemented: exhaustive and triangle
 \item Bresenham's line algorithm for line-grid intersection
 \item Score evaluation
 \begin{itemize}
-\item Naive: remember non-zero bins, score = percentage of these bins which are populated during model rendering [Currently implemented]
-\item Convolute result with gaussian kernel: i.e. we choose two kernels - 2D kernel for spatial smoothing and 1D kernel for angle smoothing, so that rendered segment contributes to several bins simultaneously with different weights
+\item Evaluate score directly (number of supported reference bins)
+\item Convolute reference image with gaussian kernel: i.e. we choose two kernels - 2D kernel for spatial smoothing and 1D kernel for angle smoothing, so that image segment contributes to several bins simultaneously with different weights
 \end{itemize}
 \end{itemize}
+\end{frame}
+
+\begin{frame}[t, fragile]{Results}
+\begin{itemize}
+\item Currently validated on one test set: 515 photos 6000x4000 with 10 pylons, two of which are of different type then the one which is matched
+\item Discrepancy somewhere near 0.4m
+\item Using Agisoft Photoscan I have put 3d points, matching them on several images
+\item Timings: matching build in debug takes 93 minutes
+\begin{itemize}
+\item Simple math: Detection took 20 minutes, so average speed is 11.3 minutes per power pylon
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t, fragile]{Results}
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+\centering
+\includegraphics[scale=0.15]{results_cool}
+\caption{Inserted 3D model}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+\includegraphics[scale=0.15]{results_cool_wires}
+\caption{Wires are added using A. Buslaev's plugin}
+\end{subfigure}
+\end{figure}
 \end{frame}
 
 
