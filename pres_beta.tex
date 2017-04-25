@@ -25,7 +25,7 @@
 Supervisor: Dmitry Rykovanov (Geoscan)}
 \title{Render-Based Power Pylon Positioning Using UAV Photos}
 \institute{St Petersburg Academic University}
-\date[b]{16 Mar 2017}
+\date[b]{27 April 2017}
   
 \definecolor{darkgreen}{rgb}{0,0.5,0}
 \definecolor{dhscodebg}{rgb}{0.95,0.95,0.95}
@@ -217,7 +217,6 @@ Data taken from [4], time is in minutes
 \end{itemize}
 \item Pylon detection through SVM
 \begin{itemize}
-\item ORB descriptor for features
 \item ROI is splitted into cells and for each cell decision is made
 \item Time per image (640 x 480) is 25 ms 
 \end{itemize}
@@ -317,7 +316,7 @@ Interestingly, never seen it used anywhere
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 \centering
-\includegraphics[scale=0.072]{roi}
+\includegraphics[scale=0.072]{pylon1}
 \caption{Extracted roi lines}
 \end{subfigure}
 \end{figure}
@@ -487,6 +486,14 @@ Two matchers are currently implemented: exhaustive and triangle
 \end{figure}
 \end{frame}
 
+
+\begin{frame}[t, fragile]{Future Work}
+\begin{itemize}
+\item Good as proof of concept, yet far away from production-level solution
+\item Challenging problem: match different pylons from predefined library
+\item Enhance pylon detection (triangles, neural networks, etc)
+\end{itemize}
+\end{frame}
 
 \begin{frame}[fragile]{Thank You for Your Attention}
 
