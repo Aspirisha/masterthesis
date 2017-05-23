@@ -104,65 +104,22 @@ The goal is to:
 \label{fig:line3d_output}
 \end{figure}
 \end{frame}
-
-
-\begin{frame}[t, fragile]{Approaches Overview: Photogrammetry + LiDAR}
-Gunho Sohn et al. "Automatic Powerline Scene Classification and Reconstruction Using Airborne LiDAR Data", 2012 
-\begin{itemize}
-\item Split space into voxels 1.5 x 1.5 x 1.5 $\Rightarrow$ line voting, RANSAC
-\item Pylon detection: RF classifier
-\begin{itemize}
-\item Maximum orientation variation (huge for pylons)
-\item Orientation parallelism
-\end{itemize}
-\item Pylon detection: 0.06m for power lines
-\end{itemize}
-\end{frame}
-
-\begin{frame}[t, fragile]{Approaches Overview: Photogrammetry + LiDAR}
-Li et al. "A Model-Driven Approach for 3D Modeling of Pylon from Airborne LiDAR Data", 2015
-\begin{itemize}
-\item Model-based approach (library of pylon heads)
-\item Detection via height variance map and density projection image
-\item Position and orientation: contour planes; assume verticality
-\item Precision: said to be 0.03m in horizontal plane and 0.99$^\circ $
-\end{itemize}
-\begin{center}
-\includegraphics[width=0.3\linewidth]{model_based_lidar1}
-\includegraphics[width=0.5\linewidth]{model_based_lidar3}
-\end{center}
-
-\begin{flushright}
-\small{$^*$Pictures from original work}
-\end{flushright}
-\end{frame}
-
-\begin{frame}[t, fragile]{Approaches Overview: Photogrammetry + LiDAR}
- Bo Guo et al. "A Stochastic Geometry Method for Pylon
-Reconstruction from Airborne LiDAR Data", 2016
-\begin{itemize}
-\item Model-based approach (library of pylons)
-\item Simulated annealing to match models
-\item Precision: said to be 0.37m
-\end{itemize}
-\end{frame}
-
 \begin{frame}[t, fragile]{Approaches Overview: Pure Photogrammetry}
 
 Disclaimer: SIFT + PMVS perform poorly: wiry structures are thin and textureless $\Rightarrow$ small amount of feature points 
 
 \begin{itemize}
-\item [4] M. Hofer, "Line-based 3D Reconstruction of Wiry Objects", 2013.
-\item [4'] M. Hofer, "Efficient 3D scene abstraction using line segments", 2016
-\item [5] A. Correa, "UAV vision system: Application in electric line following and 3D reconstruction of associated terrain", 2017
-\item [6] B. Morarjee, "Using Multiple View Geometry for Transmission Tower Reconstruction", 2016
+\item [1] M. Hofer, "Line-based 3D Reconstruction of Wiry Objects", 2013.
+\item [1'] M. Hofer, "Efficient 3D scene abstraction using line segments", 2016
+\item [2] A. Correa, "UAV vision system: Application in electric line following and 3D reconstruction of associated terrain", 2017
+\item [3] B. Morarjee, "Using Multiple View Geometry for Transmission Tower Reconstruction", 2016
 
-\item [7] O. Araar, N. Aouf, "Power pylon detection and monocular depth
+\item [4] O. Araar, N. Aouf, "Power pylon detection and monocular depth
 estimation from inspection UAVs", 2015
 \end{itemize}
 \end{frame}
 
-\begin{frame}[t, fragile]{Key ideas of [4]}
+\begin{frame}[t, fragile]{Key ideas of [1]}
 Line3D is an open source C++ library which reconstructs 3d line segments form the set of images, developed as PhD by Manuel Hofer
 \begin{itemize}
 
@@ -180,13 +137,13 @@ Unfortunately, very poor results when wiry object is far and the number of photo
 \end{frame}
 
 \begin{frame}[t, fragile]{Line3D Timing}
-Data taken from [4], time is in minutes
+Data taken from [1], time is in minutes
 \begin{figure}
 \centering
 \includegraphics[scale=0.25]{line3dtime}
 \end{figure}
 
-[4'] improves runtime significantly (up to 8 times)
+[1'] improves runtime significantly (up to 8 times)
 \end{frame}
 
 
@@ -201,29 +158,26 @@ Data taken from [4], time is in minutes
 
 
 
-\begin{frame}[t, fragile]{Key ideas of [5]}
-\begin{itemize}
-\item [1] Power line detection
-\item [2] \textbf{Power towers detection}
-\item [3] UAV visual-based navigation
-\item [4] \textbf{3D reconstruction of electrical infrastructure}
-\end{itemize}
-
+\begin{frame}[t, fragile]{Key ideas of [2]}
 \begin{itemize}
 \item Custom line detection algorithm Circle Based Search
 \begin{itemize}
 \item Said to be faster than Hough/LSD when dealing with long lines
-\item Not so precise with short lines; but it is feature in case of wire detection
 \end{itemize}
 \item Pylon detection through SVM
 \begin{itemize}
 \item ROI is splitted into cells and for each cell decision is made
 \item Time per image (640 x 480) is 25 ms 
 \end{itemize}
+\item Pylon reconstruction via descriptors matching (SIFT, BRISK)
+\begin{itemize}
+\item Huge amount of photos used in experiments: 200 and more
+\item Time: 20-120 minutes depending on hardware and used descriptors
+\end{itemize}
 \end{itemize}
 \end{frame}
 
-\begin{frame}[t, fragile]{Key ideas of [6]}
+\begin{frame}[t, fragile]{Key ideas of [3]}
 M. Hofer's epigon: uses Line3d
 
 \begin{figure}
@@ -234,7 +188,7 @@ M. Hofer's epigon: uses Line3d
 \end{figure}
 \end{frame}
 
-\begin{frame}[t, fragile]{Interesting idea of [7]}
+\begin{frame}[t, fragile]{Interesting idea of [4]}
 \begin{figure}
 \centering
 \includegraphics[scale=0.23]{colorful}
@@ -252,8 +206,8 @@ M. Hofer's epigon: uses Line3d
 \end{figure}
 \end{frame}
 
-\begin{frame}[t, fragile]{Pylon Detection}
-Current simple (yet working in non-urban scenes) strategy:
+\begin{frame}[t, fragile]{Wire-Based Pylon Detection}
+Simple (yet working in non-urban scenes) strategy:
 \begin{itemize}
 \item Find power wires
 \item Wires intersection $\Rightarrow$ pylon
@@ -294,19 +248,8 @@ Interestingly, never seen it used anywhere
 \end{figure}
 \end{frame}
 
-\begin{frame}[t, fragile]{Possible Pylon Detection Enhancements}
-\begin{itemize}
-\item Maybe use CBS algorithm proposed in \lbrack 5\rbrack
-\item Use some ML for efficiency and robustness
-\begin{itemize} 
-\item SVM or neural networks
-\end{itemize}
-\item Look for many triangles in the seen
-\end{itemize}
-\end{frame}
 
-
-\begin{frame}[t, fragile]{Detection Results Example}
+\begin{frame}[t, fragile]{Wire-Based Detection Results Example}
 \begin{figure}
 \centering
 \begin{subfigure}{.5\textwidth}
@@ -317,10 +260,57 @@ Interestingly, never seen it used anywhere
 \begin{subfigure}{.5\textwidth}
 \centering
 \includegraphics[scale=0.072]{pylon1}
-\caption{Extracted roi lines}
+\caption{Extracted roi lines (wires filtered out)}
 \end{subfigure}
 \end{figure}
 \end{frame}
+
+
+\begin{frame}[t, fragile]{Problems and Possible Enhancements}
+\begin{itemize}
+\item Urban scenes cause big troubles: roads, railways, buildings
+\item Maybe use CBS algorithm proposed in \lbrack 5\rbrack
+\item Use some ML for efficiency and robustness
+\begin{itemize} 
+\item SVM or neural networks
+\end{itemize}
+\end{itemize}
+\begin{figure}
+\centering
+\includegraphics[scale=0.07]{wrong_wires}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}[t, fragile]{Triangle-Based Pylon Detection}
+Looks like a lot more robust
+\begin{figure}
+\centering
+\includegraphics[scale=0.3]{detect1}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[t, fragile]{Triangle-Based Detection Results Example}
+\begin{figure}
+\centering
+\begin{subfigure}{.5\textwidth}
+\centering
+\includegraphics[scale=0.15]{triangles_volg2}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+\centering
+\includegraphics[scale=0.1]{triangles_detected1}
+
+\end{subfigure}
+\captionsetup{labelformat=empty}
+\caption{Detected triangles and final bounding box}
+\end{figure}
+\end{frame}
+
+
+
 
 
 \begin{frame}[t, fragile]{Pylon Matching}
@@ -329,7 +319,6 @@ Interestingly, never seen it used anywhere
 \item Combine results
 \end{itemize}
 
-Two matchers are currently implemented: exhaustive and triangle
 \begin{itemize} 
 \item \textbf{Exhaustive matcher} gets cartesian and angle boundaries as input and naively busts transformations   
 \begin{itemize} 
@@ -339,6 +328,7 @@ Two matchers are currently implemented: exhaustive and triangle
 \item \textbf{Triangle matcher} finds triangle holes on the CAD model $\{t_m\}$ and triangles on the image $\{t_i\}$, and for each pair ($t_m, t_i$) tries to find model transformation matrix $M$: $P \cdot V \cdot M(t_m) = t_i$   
 \begin{itemize}
 \item It's enough to solve $4^{th}$ order polynomial equation for a single triangles pair
+(see Fischler, 1981, "Random Sample Consensus...")
 \item Produces hypotheses, some are incorrect $\Rightarrow$ need sanity check (scoring, common sense)
 \item Generally a lot faster than exhaustive search
 \item Sometimes there are too few of image triangles $\Rightarrow$ not a silver bullet
@@ -463,7 +453,9 @@ Two matchers are currently implemented: exhaustive and triangle
 \begin{itemize}
 \item Currently validated on one test set: 515 photos 6000x4000 with 10 pylons, two of which are of different type then the one which is matched
 \item Discrepancy somewhere near 0.4m
-\item Using Agisoft Photoscan I have put 3d points, matching them on several images
+\begin{itemize}
+\item Using Agisoft Photoscan I have put 3d points, matching them on several images, and performed some measurements
+\end{itemize}
 \item Timings: matching build in debug takes 93 minutes
 \begin{itemize}
 \item Simple math: Detection took 20 minutes, so average speed is 11.3 minutes per power pylon
@@ -477,9 +469,10 @@ Two matchers are currently implemented: exhaustive and triangle
 \begin{subfigure}{.5\textwidth}
 \centering
 \includegraphics[scale=0.15]{results_cool}
-\caption{Inserted 3D model}
+\caption{Inserted 3D model and manually put markers}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
+\centering
 \includegraphics[scale=0.15]{results_cool_wires}
 \caption{Wires are added using A. Buslaev's plugin}
 \end{subfigure}
@@ -491,7 +484,9 @@ Two matchers are currently implemented: exhaustive and triangle
 \begin{itemize}
 \item Good as proof of concept, yet far away from production-level solution
 \item Challenging problem: match different pylons from predefined library
-\item Enhance pylon detection (triangles, neural networks, etc)
+\item Rotation problems: $0^\circ, 90^\circ, 180^\circ, 270^\circ$
+\item Enhance pylon detection (maybe neural networks?)
+\item Provide library API to allow easy binding with other SFM frameworks besides Agisoft PhotoScan
 \end{itemize}
 \end{frame}
 

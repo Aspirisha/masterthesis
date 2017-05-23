@@ -1,0 +1,249 @@
+\documentclass[12pt]{report}
+\usepackage[T2A]{fontenc} 
+%\usepackage[cp1251]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english, russian]{babel}
+\usepackage{cmap}
+\usepackage{xkeyval}
+\usepackage[pdftex]{graphicx}
+\usepackage{amsmath}
+\usepackage[section]{placeins}
+\usepackage{afterpage}
+\usepackage{amsfonts}
+\usepackage{multirow}
+\usepackage{xfrac}
+\usepackage[nottoc]{tocbibind}
+\usepackage{caption}
+
+\usepackage[left=2cm,right=2cm,
+     top=2cm,bottom=2cm,bindingoffset=0cm]{geometry}
+     %\geometry{margin=1cm}%Just for showing, these are bad margins!
+%\usepackage[pdftex]{graphics}
+\graphicspath{{images/}}
+\frenchspacing
+
+\usepackage{mathrsfs}
+
+%4 listing 
+
+\usepackage{listings} %% собственно, это и есть пакет listings
+\usepackage{color} %% это для отображения цвета в коде
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\tolerance=1000
+
+\usepackage{caption}
+\DeclareCaptionFont{white}{\color{white}} %% это сделает текст заголовка белым
+%% код ниже нарисует серую рамочку вокруг заголовка кода.
+\DeclareCaptionFormat{listing}{\colorbox{black}{\parbox{\textwidth}{#1#2#3}}}
+
+\usepackage{etoolbox}
+\usepackage{relsize}
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
+\parindent=1cm
+
+\usepackage{titlesec}
+
+\titleformat{\chapter}
+  {\Large\bfseries} % format
+  {}                % label
+  {0pt}             % sep
+  {\huge}           % before-code
+\usepackage[figure]{totalcount} 
+\usepackage{float}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+
+% Upper part of the page. The '~' is needed because \\
+% only works if a paragraph has started.
+
+\textsc{ Федеральное государственное бюджетное
+образовательное учреждение высшего образования \\
+<<Санкт-Петербургский национальный исследовательский
+Академический университет Российской академии наук>>
+}\\
+\textsc{ Центр высшего образования}\\
+\vspace{0.5cm}
+\textsc{Кафедра математических и информационных технологий}\\[1cm]
+\end{center}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\summary}[1]{\addcontentsline{toc}{subsubsection}{#1}}
+
+\begin{center}
+
+\vspace{2cm}
+\huge \textbf{Магистерская диссертация}\\[0.5cm]
+\LARGE Определение положения и ориентации опор линий электропередач средствами компьютерного зрения \\[0.4cm] 
+
+\vspace{1cm}
+
+\normalsize
+Направление: 03.04.01 - Прикладные математика и физика 
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{flushright}
+\large Допущена к защите.
+
+Зав. кафедрой
+
+д.ф-м.н., профессор Омельченко А. В.
+
+
+\vspace{1cm}
+
+
+\large Научный руководитель:
+
+Начальник одела ПО ООО "Геоскан"
+
+Рыкованов Д. П.
+
+
+\vspace{1cm}
+
+\large Рецензент:
+
+Cтарший инженер-программист НПО "Интеграция"
+
+Романов А. А.
+
+\end{flushright}
+\vfill
+
+\begin{center}
+
+% Bottom of the page
+{Санкт-Петербург\\2017}
+
+\end{center}
+\end{titlepage}
+
+\small\tableofcontents\pagebreak\normalsize
+
+\begin{center}
+\huge{\textbf{Реферат}}\\
+\vspace{0.5cm}
+\normalsize c.34, рис. 23
+\end{center}
+
+Данная работа состоит из двух практически независимых частей. 
+В первой части рассмотрены асимптотические свойства трёхмерных диаграмм Юнга, получаемых в результате определенных марковских процессов (процессе Ричардсона, приближённом аналоге процесса Планшереля и некоторых других) на трёхмерном графе Юнга. В результате ряда экспериментов удалось определить интересные свойства, которыми обладают типичные для рассмотренных процессов диаграммы, а также численно их охарактеризовать. Также, разработан алгоритм гёделевой нумерации трёхмерных диаграмм, позволяющий строить биекцию между множеством диаграмм и множеством натуральных чисел. 
+
+Во второй части исследованы методы вычисления внутренней метрики на градуированных графах с введёнными вероятностными мерами на пространствах путей до каждой вершины, описанной в работах А. М. Вершика [1], [2]. Тесно связанная с метрикой Канторовича на вероятностных мерах, она позволяет естественным образом ввести расстояние на множествах вершин одного этажа диаграммы Брателли. Особенно интересен случай центральных мер на путях, ибо для них метрика Канторовича полностью определяется структурой графа. 
+
+Вычислительная сложность нахождения расстояния между заданными вершинами градуированного графа существенно зависит от степени его связности, но чаще всего она экспоненциально зависит от номера этажа, на котором вычисляется расстояние. В данной работе мы для различных диаграмм Брателли хотим исследовать свойства этой метрики на различных этажах, на которых за разумное время возможно её нахождение.
+
+\vspace{1cm}
+\textbf{Ключевые слова:} \textit {Диаграмма Юнга, граф Юнга, метрика Канторовича, внутренняя метрика, трёхмерная диаграмма Юнга}
+
+\newpage
+\chapter{Введение}
+\hspace{\parindent} Диаграммы Юнга, впервые предложенные Альфредом Юнгом в 1900 году, нашли широкое применение в самых разных областях математики. Так, они используются в комбинаторике, теории представлений, алгебраической геометрии. Также, они являются важными объектами современной асимптотической комбинаторики. 
+
+
+\chapter{Описание предметной области}
+
+jjj
+
+\chapter{Постановка задачи}
+Oh boy
+
+
+
+\newpage
+\chapter{Методы исследования и результаты}
+
+
+\newpage
+
+\chapter{Заключение}
+\hspace{\parindent} В ходе данной работы были исследованы некоторые открытые вопросы современной асимптотической комбинаторики. 
+\begin{enumerate}
+\item one
+\item twos
+
+\end{enumerate}
+ 
+
+\newpage
+\chapter{Приложение}
+\section{Нумерация трёхмерных диаграмм}
+
+\newpage
+\begin{thebibliography}{99}
+
+\bibitem{Vershik1}
+  А. М. Вершик,
+  \emph{Оснащённые градуированные графы, проективные пределы симплексов и их границы},
+  Записки научных семинаров ПОМИ,
+  том 432,
+  2015.
+  
+\bibitem{Vershik2}
+  А. М. Вершик,
+    \emph{Два способа определения согласованных метрик на симплексе мер},
+    Записки научных семинаров ПОМИ,
+    том 411,
+    2013.
+  
+\bibitem{Petrov1}
+  F. Petrov,
+  \emph{Polynomial Approach to Explicit Formulae for
+  Generalized Binomial Coefficients},
+  2015.
+  
+ \bibitem{Kerov1}
+    S. Kerov,
+    \emph{A Differential Model of Growth of Young Diagrams}, Proc. St. Petersburg Math. Soc. 4,
+    1996.
+    
+\bibitem{Rost1}
+    H. Rost,
+    \emph{Non-Equilibrium Behaviour of a Many Particles Process: Density Profile and Local Equilibria}, Zeitschrift für Wahrscheinlichkeitstheorie und Verwandte Gebiete
+    1981, Volume 58, Issue 1, pp 41-53
+
+\bibitem{Kantorovich1}
+  Л. В. Канторович,
+  \emph{О перемещении масс},
+  Доклады Академии Наук СССР,
+  том XXXVII,
+  1942.
+
+\bibitem{Fulton}
+  У. Фултон,
+  \emph{Таблицы Юнга и их приложения к теории представлений и геометрии},
+  издательство МЦНМО,
+  2006.
+  
+  
+  \bibitem{KerovVershik1}
+  С. В. Керов, \emph{Distribution of symmetry types of high rank tensors},
+  Записки научных семинаров ЛОМИ, том 155, 1986.
+
+\bibitem{LoganShepp}
+  B. F. Logan and L. A. Shepp, \emph{A variational problem for random Young tableaux}, Adv. Math.,
+  26, 1977
+
+\bibitem{VershikKerov1}
+  A. Vershik and S. Kerov, \emph{Asymptotics of the Plancherel measure of the symmetric group and
+  the limit form of Young tableaux}, Записки научных семинаров ЛОМИ, том 18, 1977
+
+\bibitem{VasTer1}
+  Н.Н. Васильев, А.Б. Терентьев, \emph{Моделирование мер, близких к центральным, на трёхмерном графе Юнга},
+  Записки научных семинаров ПОМИ, том 432, 2014.
+
+\bibitem{GrowthCorner}
+  J. Olejarz, P.L. Krapivsky, S. Redner, K. Mallick \emph{Growth Inside a Corner: The Limiting Interface Shape},
+  Physical review letters, PRL 108, 2012.
+  
+\end{thebibliography}
+
+\end{document}
